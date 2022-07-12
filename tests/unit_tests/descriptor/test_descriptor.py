@@ -55,7 +55,7 @@ def test_descriptor_get():
 @pytest.mark.parametrize("cls", (ExampleCls, ExampleChild))
 def test_get_descriptors_cls(cls):
     instance = cls
-    assert get_descriptors(Descriptor, cls=instance) == [cls.desc]
+    assert get_descriptors(Descriptor, cls=instance) == [instance.desc]
 
 
 @pytest.mark.parametrize("cls", (ExampleCls, ExampleChild))

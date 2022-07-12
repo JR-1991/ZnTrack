@@ -44,16 +44,15 @@ def jupyter_class_to_file(nb_name, module_name):
         for line in f:
             if line.startswith("import") or line.startswith("from"):
                 imports += line
-            if reading_class:
-                if (
-                    re.match(r"\S", line)
-                    and not line.startswith("#")
-                    and not line.startswith("class")
-                    and not line.startswith("def")
-                    and not line.startswith("@")
-                    and not line.startswith(")")
-                ):
-                    reading_class = False
+            if reading_class and (
+                re.match(r"\S", line)
+                and not line.startswith("#")
+                and not line.startswith("class")
+                and not line.startswith("def")
+                and not line.startswith("@")
+                and not line.startswith(")")
+            ):
+                reading_class = False
             if reading_class or line.startswith("class"):
                 reading_class = True
                 class_definition += line
@@ -64,11 +63,14 @@ def jupyter_class_to_file(nb_name, module_name):
                 f"def {module_name}"
             ):
                 found_node = True
-            if found_node and not reading_class:
-                if re.match(r"#.*zntrack:.*break", line):
-                    # stop converting the file after this line if the Node was already
-                    #  found
-                    break
+            if (
+                found_node
+                and not reading_class
+                and re.match(r"#.*zntrack:.*break", line)
+            ):
+                # stop converting the file after this line if the Node was already
+                #  found
+                break
 
     src = imports + "\n\n" + class_definition
 

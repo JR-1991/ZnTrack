@@ -31,16 +31,13 @@ def handle_deps(value) -> typing.List[str]:
     if isinstance(value, (list, tuple)):
         for lst_val in value:
             deps_files += handle_deps(lst_val)
-    else:
-        if isinstance(value, (GraphWriter, NodeAttribute)):
-            for file in value.affected_files:
-                deps_files.append(pathlib.Path(file).as_posix())
-        elif isinstance(value, (str, pathlib.Path)):
-            deps_files.append(pathlib.Path(value).as_posix())
-        elif value is None:
-            pass
-        else:
-            raise ValueError(f"Type {type(value)} ({value}) is not supported!")
+    elif isinstance(value, (GraphWriter, NodeAttribute)):
+        for file in value.affected_files:
+            deps_files.append(pathlib.Path(file).as_posix())
+    elif isinstance(value, (str, pathlib.Path)):
+        deps_files.append(pathlib.Path(value).as_posix())
+    elif value is not None:
+        raise ValueError(f"Type {type(value)} ({value}) is not supported!")
 
     return deps_files
 
@@ -75,8 +72,7 @@ class DVCRunOptions:
         """
         out = []
         for field_name in self.__dataclass_fields__:
-            value = getattr(self, field_name)
-            if value:
+            if value := getattr(self, field_name):
                 out.append(f"--{field_name.replace('_', '-')}")
         return out
 

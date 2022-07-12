@@ -44,4 +44,4 @@ def test_timeit_no_metadata_err(proj_path):
 
 def test_timeit(proj_path):
     SleepClass().run_and_save()
-    assert SleepClass.load().timeit_metrics["run:timeit"] - 1.0 < 0.1
+    assert SleepClass.load().timeit_metrics["run:timeit"] < 1.1

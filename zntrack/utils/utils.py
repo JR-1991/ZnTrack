@@ -114,13 +114,12 @@ def module_handler(obj) -> str:
     obj:
         Any object that implements __module__
     """
-    if obj.__module__ == "__main__":
-        if pathlib.Path(sys.argv[0]).stem == "ipykernel_launcher":
-            # special case for e.g. testing
-            return obj.__module__
-        return pathlib.Path(sys.argv[0]).stem
-    else:
+    if obj.__module__ != "__main__":
         return obj.__module__
+    if pathlib.Path(sys.argv[0]).stem == "ipykernel_launcher":
+        # special case for e.g. testing
+        return obj.__module__
+    return pathlib.Path(sys.argv[0]).stem
 
 
 def check_type(
@@ -160,9 +159,7 @@ def check_type(
 
 def update_nb_name(nb_name: str) -> str:
     """Check the config file for a nb_name if None provided"""
-    if nb_name is None:
-        return config.nb_name
-    return nb_name
+    return config.nb_name if nb_name is None else nb_name
 
 
 def module_to_path(module: str, suffix=".py") -> pathlib.Path:

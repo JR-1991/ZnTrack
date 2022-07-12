@@ -24,7 +24,7 @@ class WritePlots(Node):
     plots: pd.DataFrame = zn.plots()
 
     def run(self):
-        self.plots = pd.DataFrame({"value": [x for x in range(100)]})
+        self.plots = pd.DataFrame({"value": list(range(100))})
         self.plots.index.name = "my_index"
 
 
@@ -32,14 +32,14 @@ class WritePlotsNoIndex(Node):
     plots: pd.DataFrame = zn.plots()
 
     def run(self):
-        self.plots = pd.DataFrame({"value": [x for x in range(100)]})
+        self.plots = pd.DataFrame({"value": list(range(100))})
 
 
 class WritePlotsWrongData(Node):
     plots: pd.DataFrame = zn.plots()
 
     def run(self):
-        self.plots = {"value": [x for x in range(100)]}
+        self.plots = {"value": list(range(100))}
 
 
 def test_write_plots(proj_path):
@@ -53,7 +53,7 @@ def test_write_plots(proj_path):
 def test_load_plots(proj_path):
     WritePlots().run_and_save()
 
-    df = pd.DataFrame({"value": [x for x in range(100)]})
+    df = pd.DataFrame({"value": list(range(100))})
     df.index.name = "index"
 
     assert df.equals(WritePlots.load().plots)
@@ -83,7 +83,7 @@ class WriteTwoPlots(Node):
     plots_b: pd.DataFrame = zn.plots()
 
     def run(self):
-        self.plots_a = pd.DataFrame({"value": [x for x in range(100)]})
+        self.plots_a = pd.DataFrame({"value": list(range(100))})
         self.plots_a.index.name = "my_index_a"
 
         self.plots_b = pd.DataFrame({"value": [-x for x in range(100)]})
@@ -106,7 +106,7 @@ class WritePlotsModify(Node):
     plots = zn.plots(x_label="test_label", title="My Plot", template="smooth")
 
     def run(self):
-        self.plots = pd.DataFrame({"value": [x for x in range(100)]})
+        self.plots = pd.DataFrame({"value": list(range(100))})
 
 
 class WritePlotsModifyDVC(Node):

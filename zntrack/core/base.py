@@ -54,7 +54,7 @@ def update_dependency_options(value):
 class LoadViaGetItem(type):
     """Metaclass for adding getitem support to load"""
 
-    def __getitem__(cls: Node, item) -> Node:
+    def __getitem__(self, item) -> Node:
         """Allow Node[<nodename>] to access an instance of the Node
 
         Attributes
@@ -64,9 +64,7 @@ class LoadViaGetItem(type):
             Can be a dict for load(**item) | e.g. {name:"nodename", lazy:True}
 
         """
-        if isinstance(item, dict):
-            return cls.load(**item)
-        return cls.load(name=item)
+        return self.load(**item) if isinstance(item, dict) else self.load(name=item)
 
     def __matmul__(self, other: str) -> typing.Union[NodeAttribute, typing.Any]:
         """Shorthand for: getdeps(Node, other)
@@ -198,18 +196,18 @@ class Node(GraphWriter, metaclass=LoadViaGetItem):
             utils.file_io.clear_config_file(utils.Files.zntrack, node_name=self.node_name)
         # Save dvc.<option>, dvc.deps, zn.Method
         for option in self._descriptor_list:
-            if results:
-                if option.zn_type in utils.VALUE_DVC_TRACKED:
-                    # only save results
-                    option.save(instance=self)
-            else:
-                if option.zn_type not in utils.VALUE_DVC_TRACKED:
-                    # save all dvc.<options>
-                    option.save(instance=self)
-                else:
-                    # Create the path for DVC to write a .gitignore file
-                    # for the filtered files
-                    option.mkdir(instance=self)
+            if (
+                results
+                and option.zn_type in utils.VALUE_DVC_TRACKED
+                or not results
+                and option.zn_type not in utils.VALUE_DVC_TRACKED
+            ):
+                # only save results
+                option.save(instance=self)
+            elif not results:
+                # Create the path for DVC to write a .gitignore file
+                # for the filtered files
+                option.mkdir(instance=self)
 
     def update_options(self, lazy=None):
         """Update all ZnTrack options inheriting from ZnTrackOption
