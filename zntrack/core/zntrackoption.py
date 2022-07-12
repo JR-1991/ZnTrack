@@ -30,9 +30,7 @@ def uses_node_name(zn_type, instance) -> typing.Union[str, None]:
         returns the node_name if it is being used, otherwise returns None
 
     """
-    if zn_type in utils.VALUE_DVC_TRACKED:
-        return None
-    return instance.node_name
+    return None if zn_type in utils.VALUE_DVC_TRACKED else instance.node_name
 
 
 class ZnTrackOption(descriptor.Descriptor):

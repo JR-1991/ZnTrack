@@ -32,8 +32,7 @@ class SerializedClass:
     def get_cls(self) -> typing.Type[Node]:
         """Import the serialized class from the given module"""
         module = importlib.import_module(self.module)
-        cls = getattr(module, self.cls)
-        return cls
+        return getattr(module, self.cls)
 
 
 @dataclasses.dataclass

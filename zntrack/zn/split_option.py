@@ -32,13 +32,12 @@ def split_value(input_val) -> (typing.Union[dict, list], typing.Union[dict, list
     if isinstance(input_val, (list, tuple)):
         data = [split_value(x) for x in input_val]
         params_data, _ = zip(*data)
+    elif input_val["_type"] in ["zn.method"]:
+        params_data = input_val["value"].pop("kwargs")
+        params_data["_cls"] = input_val["value"].pop("cls")
     else:
-        if input_val["_type"] in ["zn.method"]:
-            params_data = input_val["value"].pop("kwargs")
-            params_data["_cls"] = input_val["value"].pop("cls")
-        else:
-            # things that are not zn.method and do not have kwargs, such as pathlib, ...
-            params_data = input_val.pop("value")
+        # things that are not zn.method and do not have kwargs, such as pathlib, ...
+        params_data = input_val.pop("value")
     return params_data, input_val
 
 
