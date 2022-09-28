@@ -5,7 +5,7 @@ nbsphinx
 nbsphinx-link
 numpydoc
 sphinx-copybutton
-sphinx==4.0.2
+sphinx==5.2.2
 pandoc
 numpy
 matplotlib
